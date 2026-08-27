@@ -20,3 +20,4 @@ DerivedData
 # Repository exclusions
 Drop_Framework_And_Headers/
 Library/
+Pods

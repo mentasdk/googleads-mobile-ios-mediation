@@ -1,20 +1,48 @@
 PODS:
+  - AdMobMentaAdapter (1.0.33):
+    - Google-Mobile-Ads-SDK (>= 12.0)
+    - MentaBaseGlobal (= 1.0.33)
+    - MentaMediationGlobal (= 1.0.33)
+    - MentaVlionGlobal (= 1.0.33)
+    - MentaVlionGlobalAdapter (= 1.0.33)
   - Google-Mobile-Ads-SDK (12.9.0):
     - GoogleUserMessagingPlatform (>= 1.1)
   - GoogleUserMessagingPlatform (3.0.0)
+  - MentaBaseGlobal (1.0.33)
+  - MentaMediationGlobal (1.0.33):
+    - MentaBaseGlobal (~> 1.0.33)
+  - MentaVlionGlobal (1.0.33):
+    - MentaBaseGlobal (~> 1.0.33)
+  - MentaVlionGlobalAdapter (1.0.33):
+    - MentaMediationGlobal (~> 1.0.33)
+    - MentaVlionGlobal (~> 1.0.33)
 
 DEPENDENCIES:
+  - AdMobMentaAdapter (from `../`)
   - Google-Mobile-Ads-SDK (~> 12.9)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs:
+  trunk:
     - Google-Mobile-Ads-SDK
     - GoogleUserMessagingPlatform
+    - MentaBaseGlobal
+    - MentaMediationGlobal
+    - MentaVlionGlobal
+    - MentaVlionGlobalAdapter
+
+EXTERNAL SOURCES:
+  AdMobMentaAdapter:
+    :path: "../"
 
 SPEC CHECKSUMS:
+  AdMobMentaAdapter: 03afd878c1f5c1dc395b7f15f1c74847e4e138ad
   Google-Mobile-Ads-SDK: 36cce7d8dc1b615145d02491c8bf5640ef854e7c
   GoogleUserMessagingPlatform: f8d0cdad3ca835406755d0a69aa634f00e76d576
+  MentaBaseGlobal: 2edffca373c9056fd8920b764d2caaa96b03e269
+  MentaMediationGlobal: b196f74033faf15ae1f3e07c1251cfe706ba79f8
+  MentaVlionGlobal: a5408a0156bd532ec1ea557841c6090de5c6a3ef
+  MentaVlionGlobalAdapter: 4d3ef69bfc51c550636e6c30ecae872d3da31f4f
 
-PODFILE CHECKSUM: e637e7b776d6c05f614969b8adf6fe3f283f02d9
+PODFILE CHECKSUM: 63ca0918a6355a232d7fa2b01e13c56a8aa79e15
 
 COCOAPODS: 1.16.2
