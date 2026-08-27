@@ -22,9 +22,14 @@
 #import <GoogleMobileAds/GoogleMobileAds.h>
 #import <SampleAdSDK/SampleAdSDK.h>
 
+#import "AdLogStore.h"
+#import "AdLogViewController.h"
 #import "ExampleNativeAdView.h"
 
-@interface ViewController () <GADFullScreenContentDelegate, GADNativeAdLoaderDelegate>
+@interface ViewController () <GADFullScreenContentDelegate,
+                              GADNativeAdLoaderDelegate,
+                              GADBannerViewDelegate,
+                              GADNativeAdDelegate>
 
 @property(nonatomic, strong) AdSourceConfig *config;
 
@@ -48,6 +53,8 @@
 
 @property(nonatomic, strong) GADRewardedInterstitialAd *rewardedInterstitialAd;
 
+@property(nonatomic, strong) GADNativeAd *nativeAd;
+
 /// You must keep a strong reference to the GADAdLoader during the ad loading process.
 @property(nonatomic, strong) GADAdLoader *adLoader;
 
@@ -62,6 +69,15 @@
 
 @end
 
+static void LogAdEvent(AdLogSlot slot, NSString *event, NSString *detail) {
+  [[AdLogStore sharedStore] logSlot:slot event:event detail:detail];
+  if (detail.length > 0) {
+    NSLog(@"[AdLog][%@] %@ — %@", AdLogSlotTitle(slot), event, detail);
+  } else {
+    NSLog(@"[AdLog][%@] %@", AdLogSlotTitle(slot), event);
+  }
+}
+
 @implementation ViewController
 
 + (instancetype)controllerWithAdSourceConfig:(AdSourceConfig *)adSourceConfig {
@@ -69,6 +85,43 @@
       instantiateViewControllerWithIdentifier:@"ViewController"];
   controller.config = adSourceConfig;
   return controller;
+}
+
+- (void)viewDidLoad {
+  [super viewDidLoad];
+  self.title = self.config.title;
+  self.navigationItem.rightBarButtonItem =
+      [[UIBarButtonItem alloc] initWithTitle:@"日志"
+                                       style:UIBarButtonItemStylePlain
+                                      target:self
+                                      action:@selector(showAdLogs)];
+
+  self.bannerAdView.adUnitID = self.config.bannerAdUnitID;
+  self.bannerAdView.rootViewController = self;
+  self.bannerAdView.delegate = self;
+  LogAdEvent(AdLogSlotBanner, @"开始加载", self.config.bannerAdUnitID);
+  [self.bannerAdView loadRequest:[GADRequest request]];
+
+  [self requestAppOpen];
+  [self requestInterstitial];
+  [self requestRewarded];
+  [self requestRewardedInterstitial];
+  [self refreshNativeAd:nil];
+}
+
+- (void)showAdLogs {
+  AdLogViewController *logs = [[AdLogViewController alloc] initWithInitialSlot:AdLogSlotAppOpen];
+  UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:logs];
+  nav.modalPresentationStyle = UIModalPresentationPageSheet;
+  if (@available(iOS 15.0, *)) {
+    nav.sheetPresentationController.detents = @[
+      [UISheetPresentationControllerDetent mediumDetent],
+      [UISheetPresentationControllerDetent largeDetent]
+    ];
+    nav.sheetPresentationController.prefersGrabberVisible = YES;
+    nav.sheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = YES;
+  }
+  [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (IBAction)refreshNativeAd:(id)sender {
@@ -80,34 +133,21 @@
                                                 adTypes:@[ GADAdLoaderAdTypeNative ]
                                                 options:@[ adViewOptions ]];
   self.adLoader.delegate = self;
+  LogAdEvent(AdLogSlotNative, @"开始加载", self.config.nativeAdUnitID);
   [self.adLoader loadRequest:[GADRequest request]];
 }
 
-- (void)viewDidLoad {
-  [super viewDidLoad];
-  self.title = self.config.title;
-
-  self.bannerAdView.adUnitID = self.config.bannerAdUnitID;
-  self.bannerAdView.rootViewController = self;
-  [self.bannerAdView loadRequest:[GADRequest request]];
-
-  [self requestAppOpen];
-  [self requestInterstitial];
-  [self requestRewarded];
-  [self requestRewardedInterstitial];
-  [self refreshNativeAd:nil];
-}
-
 - (void)requestAppOpen {
+  LogAdEvent(AdLogSlotAppOpen, @"开始加载", self.config.appOpenAdUnitID);
   [GADAppOpenAd
        loadWithAdUnitID:self.config.appOpenAdUnitID
                 request:[GADRequest request]
       completionHandler:^(GADAppOpenAd *_Nullable appOpenAd, NSError *_Nullable error) {
         if (error) {
-          NSLog(@"Failed to load an app open ad with error: %@", error.localizedDescription);
+          LogAdEvent(AdLogSlotAppOpen, @"加载失败", error.localizedDescription);
           return;
         }
-        NSLog(@"App Open ad loaded.");
+        LogAdEvent(AdLogSlotAppOpen, @"加载成功", nil);
         self.appOpenAd = appOpenAd;
         self.appOpenAd.fullScreenContentDelegate = self;
       }];
@@ -115,23 +155,25 @@
 
 - (IBAction)showAppOpen:(UIButton *)sender {
   if (self.appOpenAd) {
+    LogAdEvent(AdLogSlotAppOpen, @"开始展示", nil);
     [self.appOpenAd presentFromRootViewController:self];
   } else {
-    NSLog(@"Ad wasn't ready");
+    LogAdEvent(AdLogSlotAppOpen, @"广告未就绪", @"重新请求");
     [self requestAppOpen];
   }
 }
 
 - (void)requestInterstitial {
+  LogAdEvent(AdLogSlotInterstitial, @"开始加载", self.config.interstitialAdUnitID);
   [GADInterstitialAd
        loadWithAdUnitID:self.config.interstitialAdUnitID
                 request:[GADRequest request]
       completionHandler:^(GADInterstitialAd *ad, NSError *error) {
         if (error) {
-          NSLog(@"Failed to load an interstitial ad with error: %@", error.localizedDescription);
+          LogAdEvent(AdLogSlotInterstitial, @"加载失败", error.localizedDescription);
           return;
         }
-        NSLog(@"Interstitial ad loaded.");
+        LogAdEvent(AdLogSlotInterstitial, @"加载成功", nil);
         self.interstitial = ad;
         self.interstitial.fullScreenContentDelegate = self;
       }];
@@ -139,25 +181,25 @@
 
 - (IBAction)showInterstitial:(UIButton *)sender {
   if (self.interstitial) {
+    LogAdEvent(AdLogSlotInterstitial, @"开始展示", nil);
     [self.interstitial presentFromRootViewController:self];
   } else {
-    NSLog(@"Ad wasn't ready");
+    LogAdEvent(AdLogSlotInterstitial, @"广告未就绪", @"重新请求");
     [self requestInterstitial];
   }
 }
 
 - (void)requestRewarded {
+  LogAdEvent(AdLogSlotRewarded, @"开始加载", self.config.rewardedAdUnitID);
   GADRequest *request = [GADRequest request];
   [GADRewardedAd loadWithAdUnitID:self.config.rewardedAdUnitID
                           request:request
                 completionHandler:^(GADRewardedAd *ad, NSError *error) {
                   if (error) {
-                    // Handle ad failed to load case.
-                    NSLog(@"Rewarded ad failed to load with error: %@", error.localizedDescription);
+                    LogAdEvent(AdLogSlotRewarded, @"加载失败", error.localizedDescription);
                     return;
                   }
-                  // Ad successfully loaded.
-                  NSLog(@"Rewarded ad loaded.");
+                  LogAdEvent(AdLogSlotRewarded, @"加载成功", nil);
                   self.rewardedAd = ad;
                   self.rewardedAd.fullScreenContentDelegate = self;
                 }];
@@ -165,21 +207,24 @@
 
 - (IBAction)showRewarded:(UIButton *)sender {
   if (self.rewardedAd) {
+    LogAdEvent(AdLogSlotRewarded, @"开始展示", nil);
     [self.rewardedAd presentFromRootViewController:self
                           userDidEarnRewardHandler:^{
                             GADAdReward *reward = self.rewardedAd.adReward;
                             NSString *rewardMessage = [NSString
-                                stringWithFormat:@"Reward received with currency %@ , amount %lf",
-                                                 reward.type, [reward.amount doubleValue]];
-                            NSLog(@"%@", rewardMessage);
+                                stringWithFormat:@"currency=%@ amount=%@", reward.type,
+                                                 reward.amount];
+                            LogAdEvent(AdLogSlotRewarded, @"获得激励", rewardMessage);
                           }];
   } else {
-    NSLog(@"Ad wasn't ready");
+    LogAdEvent(AdLogSlotRewarded, @"广告未就绪", @"重新请求");
     [self requestRewarded];
   }
 }
 
 - (void)requestRewardedInterstitial {
+  LogAdEvent(AdLogSlotRewardedInterstitial, @"开始加载",
+             self.config.rewardedInterstitialAdUnitID);
   GADRequest *request = [GADRequest request];
   [GADRewardedInterstitialAd
        loadWithAdUnitID:self.config.rewardedInterstitialAdUnitID
@@ -187,13 +232,10 @@
       completionHandler:^(GADRewardedInterstitialAd *_Nullable rewardedInterstitialAd,
                           NSError *_Nullable error) {
         if (error) {
-          // Handle ad failed to load case.
-          NSLog(@"Rewarded interstitial ad failed to load with error: %@",
-                error.localizedDescription);
+          LogAdEvent(AdLogSlotRewardedInterstitial, @"加载失败", error.localizedDescription);
           return;
         }
-        // Ad successfully loaded.
-        NSLog(@"Rewarded Interstitial ad loaded.");
+        LogAdEvent(AdLogSlotRewardedInterstitial, @"加载成功", nil);
         self.rewardedInterstitialAd = rewardedInterstitialAd;
         self.rewardedInterstitialAd.fullScreenContentDelegate = self;
       }];
@@ -201,17 +243,17 @@
 
 - (IBAction)showRewardedInterstitial:(UIButton *)sender {
   if (self.rewardedInterstitialAd) {
+    LogAdEvent(AdLogSlotRewardedInterstitial, @"开始展示", nil);
     [self.rewardedInterstitialAd
         presentFromRootViewController:self
              userDidEarnRewardHandler:^{
                GADAdReward *reward = self.rewardedInterstitialAd.adReward;
                NSString *rewardMessage =
-                   [NSString stringWithFormat:@"Reward received with currency %@ , amount %lf",
-                                              reward.type, [reward.amount doubleValue]];
-               NSLog(@"%@", rewardMessage);
+                   [NSString stringWithFormat:@"currency=%@ amount=%@", reward.type, reward.amount];
+               LogAdEvent(AdLogSlotRewardedInterstitial, @"获得激励", rewardMessage);
              }];
   } else {
-    NSLog(@"Ad wasn't ready");
+    LogAdEvent(AdLogSlotRewardedInterstitial, @"广告未就绪", @"重新请求");
     [self requestRewardedInterstitial];
   }
 }
@@ -242,41 +284,100 @@
                                                                       views:viewDictionary]];
 }
 
-- (NSString *)getFullScreenAdType:(nonnull id<GADFullScreenPresentingAd>)ad {
-  if ([ad isKindOfClass:[GADInterstitialAd class]]) {
-    return @"Interstitial ad";
+- (AdLogSlot)slotForFullScreenAd:(id<GADFullScreenPresentingAd>)ad {
+  if (ad == self.appOpenAd || [ad isKindOfClass:[GADAppOpenAd class]]) {
+    return AdLogSlotAppOpen;
   }
-  if ([ad isKindOfClass:[GADRewardedAd class]]) {
-    return @"Rewarded ad";
+  if (ad == self.rewardedInterstitialAd || [ad isKindOfClass:[GADRewardedInterstitialAd class]]) {
+    return AdLogSlotRewardedInterstitial;
   }
-  return @"Full screen ad";
+  if (ad == self.rewardedAd || [ad isKindOfClass:[GADRewardedAd class]]) {
+    return AdLogSlotRewarded;
+  }
+  if (ad == self.interstitial || [ad isKindOfClass:[GADInterstitialAd class]]) {
+    return AdLogSlotInterstitial;
+  }
+  return AdLogSlotInterstitial;
 }
 
 #pragma mark GADFullScreenContentDelegate implementation
 
-- (void)ad:(nonnull id<GADFullScreenPresentingAd>)ad
-    didFailToPresentFullScreenContentWithError:(nonnull NSError *)error {
-  NSString *fullScreenAdType = [self getFullScreenAdType:ad];
-  NSLog(@"%@ failed to present full screen content with error: %@.", fullScreenAdType,
-        error.localizedDescription);
+- (void)ad:(id<GADFullScreenPresentingAd>)ad
+    didFailToPresentFullScreenContentWithError:(NSError *)error {
+  LogAdEvent([self slotForFullScreenAd:ad], @"曝光失败", error.localizedDescription);
 }
 
-/// Tells the delegate that the ad presented full screen content.
-- (void)adDidPresentFullScreenContent:(nonnull id<GADFullScreenPresentingAd>)ad {
-  NSString *fullScreenAdType = [self getFullScreenAdType:ad];
-  NSLog(@"%@ did present full screen content.", fullScreenAdType);
+- (void)adWillPresentFullScreenContent:(id<GADFullScreenPresentingAd>)ad {
+  LogAdEvent([self slotForFullScreenAd:ad], @"展示成功", nil);
 }
 
-/// Tells the delegate that the ad dismissed full screen content.
-- (void)adDidDismissFullScreenContent:(nonnull id<GADFullScreenPresentingAd>)ad {
-  NSString *fullScreenAdType = [self getFullScreenAdType:ad];
-  NSLog(@"%@ did dismiss full screen content.", fullScreenAdType);
+- (void)adDidRecordImpression:(id<GADFullScreenPresentingAd>)ad {
+  LogAdEvent([self slotForFullScreenAd:ad], @"曝光成功", nil);
+}
+
+- (void)adDidRecordClick:(id<GADFullScreenPresentingAd>)ad {
+  LogAdEvent([self slotForFullScreenAd:ad], @"点击", nil);
+}
+
+- (void)adWillDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad {
+  LogAdEvent([self slotForFullScreenAd:ad], @"即将关闭", nil);
+}
+
+- (void)adDidDismissFullScreenContent:(id<GADFullScreenPresentingAd>)ad {
+  AdLogSlot slot = [self slotForFullScreenAd:ad];
+  LogAdEvent(slot, @"关闭", nil);
+  switch (slot) {
+    case AdLogSlotAppOpen:
+      self.appOpenAd = nil;
+      break;
+    case AdLogSlotInterstitial:
+      self.interstitial = nil;
+      break;
+    case AdLogSlotRewarded:
+      self.rewardedAd = nil;
+      break;
+    case AdLogSlotRewardedInterstitial:
+      self.rewardedInterstitialAd = nil;
+      break;
+    default:
+      break;
+  }
+}
+
+#pragma mark GADBannerViewDelegate implementation
+
+- (void)bannerViewDidReceiveAd:(GADBannerView *)bannerView {
+  LogAdEvent(AdLogSlotBanner, @"加载成功", nil);
+}
+
+- (void)bannerView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(NSError *)error {
+  LogAdEvent(AdLogSlotBanner, @"加载失败", error.localizedDescription);
+}
+
+- (void)bannerViewDidRecordImpression:(GADBannerView *)bannerView {
+  LogAdEvent(AdLogSlotBanner, @"曝光成功", nil);
+}
+
+- (void)bannerViewDidRecordClick:(GADBannerView *)bannerView {
+  LogAdEvent(AdLogSlotBanner, @"点击", nil);
+}
+
+- (void)bannerViewWillPresentScreen:(GADBannerView *)bannerView {
+  LogAdEvent(AdLogSlotBanner, @"即将打开落地页", nil);
+}
+
+- (void)bannerViewWillDismissScreen:(GADBannerView *)bannerView {
+  LogAdEvent(AdLogSlotBanner, @"即将关闭落地页", nil);
+}
+
+- (void)bannerViewDidDismissScreen:(GADBannerView *)bannerView {
+  LogAdEvent(AdLogSlotBanner, @"关闭", nil);
 }
 
 #pragma mark GADAdLoaderDelegate implementation
 
 - (void)adLoader:(GADAdLoader *)adLoader didFailToReceiveAdWithError:(NSError *)error {
-  NSLog(@"%@ failed with error: %@", adLoader, error.localizedDescription);
+  LogAdEvent(AdLogSlotNative, @"加载失败", error.localizedDescription);
 }
 
 #pragma mark Utility Method
@@ -300,7 +401,9 @@
 #pragma mark GADNativeAdLoaderDelegate implementation
 
 - (void)adLoader:(GADAdLoader *)adLoader didReceiveNativeAd:(GADNativeAd *)nativeAd {
-  NSLog(@"%s, %@", __PRETTY_FUNCTION__, nativeAd);
+  LogAdEvent(AdLogSlotNative, @"加载成功", nativeAd.headline);
+  self.nativeAd = nativeAd;
+  nativeAd.delegate = self;
 
   // Create and place ad in view hierarchy.
   ExampleNativeAdView *nativeAdView =
@@ -308,7 +411,6 @@
 
   nativeAdView.nativeAd = nativeAd;
   UIView *placeholder = self.nativeAdPlaceholder;
-  ;
   NSString *awesomenessKey = self.config.awesomenessKey;
 
   [self replaceNativeAdView:nativeAdView inPlaceholder:placeholder];
@@ -370,6 +472,32 @@
 
   // In order for the SDK to process touch events properly, user interaction should be disabled.
   nativeAdView.callToActionView.userInteractionEnabled = NO;
+}
+
+#pragma mark GADNativeAdDelegate implementation
+
+- (void)nativeAdDidRecordImpression:(GADNativeAd *)nativeAd {
+  LogAdEvent(AdLogSlotNative, @"曝光成功", nil);
+}
+
+- (void)nativeAdDidRecordClick:(GADNativeAd *)nativeAd {
+  LogAdEvent(AdLogSlotNative, @"点击", nil);
+}
+
+- (void)nativeAdDidRecordSwipeGestureClick:(GADNativeAd *)nativeAd {
+  LogAdEvent(AdLogSlotNative, @"点击", @"滑动手势");
+}
+
+- (void)nativeAdWillPresentScreen:(GADNativeAd *)nativeAd {
+  LogAdEvent(AdLogSlotNative, @"即将打开落地页", nil);
+}
+
+- (void)nativeAdWillDismissScreen:(GADNativeAd *)nativeAd {
+  LogAdEvent(AdLogSlotNative, @"即将关闭落地页", nil);
+}
+
+- (void)nativeAdDidDismissScreen:(GADNativeAd *)nativeAd {
+  LogAdEvent(AdLogSlotNative, @"关闭", nil);
 }
 
 @end

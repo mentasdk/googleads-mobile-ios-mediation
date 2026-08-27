@@ -21,6 +21,8 @@
 		4A93FA521C286D8F00479579 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A93FA3A1C286D8F00479579 /* AppDelegate.m */; };
 		4A93FA591C286D8F00479579 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A93FA481C286D8F00479579 /* Images.xcassets */; };
 		4A93FA601C286D8F00479579 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A93FA511C286D8F00479579 /* ViewController.m */; };
+		F1A0000317E0A00100000003 /* AdLogStore.m in Sources */ = {isa = PBXBuildFile; fileRef = F1A0000217E0A00100000002 /* AdLogStore.m */; };
+		F1A0000617E0A00100000006 /* AdLogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F1A0000517E0A00100000005 /* AdLogViewController.m */; };
 		AA265D8281F01344E5F3A393 /* libPods-MediationExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B6B1E0B0F0893687BB346C97 /* libPods-MediationExample.a */; };
 		AE5DE0491F3E0F32005C0A1D /* StartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5DE0481F3E0F32005C0A1D /* StartViewController.m */; };
 		AE5DE0511F3E1510005C0A1D /* SampleCustomEventConstantsSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5DE04B1F3E1510005C0A1D /* SampleCustomEventConstantsSwift.swift */; };
@@ -92,6 +94,10 @@
 		4A93FA481C286D8F00479579 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MediationExample/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		4A93FA501C286D8F00479579 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = MediationExample/ViewController.h; sourceTree = SOURCE_ROOT; };
 		4A93FA511C286D8F00479579 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewController.m; path = MediationExample/ViewController.m; sourceTree = SOURCE_ROOT; };
+		F1A0000117E0A00100000001 /* AdLogStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AdLogStore.h; path = MediationExample/AdLogStore.h; sourceTree = SOURCE_ROOT; };
+		F1A0000217E0A00100000002 /* AdLogStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AdLogStore.m; path = MediationExample/AdLogStore.m; sourceTree = SOURCE_ROOT; };
+		F1A0000417E0A00100000004 /* AdLogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AdLogViewController.h; path = MediationExample/AdLogViewController.h; sourceTree = SOURCE_ROOT; };
+		F1A0000517E0A00100000005 /* AdLogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AdLogViewController.m; path = MediationExample/AdLogViewController.m; sourceTree = SOURCE_ROOT; };
 		96EB60A781E19EDD98415A2D /* Pods-MediationExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MediationExample.debug.xcconfig"; path = "Target Support Files/Pods-MediationExample/Pods-MediationExample.debug.xcconfig"; sourceTree = "<group>"; };
 		AD53C4EE4FF6D0EDE688CD34 /* Pods-MediationExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MediationExample.release.xcconfig"; path = "Target Support Files/Pods-MediationExample/Pods-MediationExample.release.xcconfig"; sourceTree = "<group>"; };
 		AE5DE0471F3E0F32005C0A1D /* StartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StartViewController.h; path = MediationExample/StartViewController.h; sourceTree = SOURCE_ROOT; };
@@ -158,6 +164,10 @@
 				AEDDCB2E1F4501B900BFB33C /* AdSourceConfig.m */,
 				4A93FA501C286D8F00479579 /* ViewController.h */,
 				4A93FA511C286D8F00479579 /* ViewController.m */,
+				F1A0000117E0A00100000001 /* AdLogStore.h */,
+				F1A0000217E0A00100000002 /* AdLogStore.m */,
+				F1A0000417E0A00100000004 /* AdLogViewController.h */,
+				F1A0000517E0A00100000005 /* AdLogViewController.m */,
 				AE5DE0471F3E0F32005C0A1D /* StartViewController.h */,
 				AE5DE0481F3E0F32005C0A1D /* StartViewController.m */,
 				4A8B03751C286FDA0052A060 /* Main.storyboard */,
@@ -398,6 +408,8 @@
 				C22A2A6527F2B62B0080B51B /* SampleCustomEvent.m in Sources */,
 				C2A0569327B72A7B0095E758 /* SampleCustomEventSwift.swift in Sources */,
 				4A93FA601C286D8F00479579 /* ViewController.m in Sources */,
+				F1A0000317E0A00100000003 /* AdLogStore.m in Sources */,
+				F1A0000617E0A00100000006 /* AdLogViewController.m in Sources */,
 				004F7B722A1576480046B59A /* SampleCustomEventUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
