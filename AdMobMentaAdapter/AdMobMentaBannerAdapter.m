@@ -56,7 +56,7 @@
     _bannerAd = [[MentaMediationBanner alloc] initWithPlacementID:placementID];
     _bannerAd.delegate = self;
     // AdMob publishers own the banner lifecycle; hide Menta's close button.
-    _bannerAd.displayConfig.hideCloseButton = YES;
+    // _bannerAd.displayConfig.hideCloseButton = YES;
 
     NSString *bidResponse = AdMobMentaAdapterBidResponse(adConfiguration);
     if (bidResponse.length) {
