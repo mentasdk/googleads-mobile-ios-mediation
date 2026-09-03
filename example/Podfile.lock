@@ -35,7 +35,7 @@ EXTERNAL SOURCES:
     :path: "../adapters/Menta"
 
 SPEC CHECKSUMS:
-  AdMobMentaAdapter: ae8218d046d2e721bcb1714163c06943ffa2eb17
+  AdMobMentaAdapter: 3fe0a41c4ae533536c98d731cbd84911c90d1ec4
   Google-Mobile-Ads-SDK: 4534fd2dfcd3f705c5485a6633c5188d03d4eed2
   GoogleUserMessagingPlatform: befe603da6501006420c206222acd449bba45a9c
   MentaBaseGlobal: 61263e8960edbf5ce38be672ba6276db5a32aa72

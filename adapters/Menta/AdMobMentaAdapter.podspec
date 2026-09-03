@@ -12,8 +12,10 @@ Pod::Spec.new do |s|
   s.static_framework = true
 
   s.source           = { :git => 'https://github.com/mentasdk/googleads-mobile-ios-mediation.git', :tag => s.version.to_s }
-  s.source_files         = 'AdMobMentaAdapter/*.{h,m}'
-  s.public_header_files  = 'AdMobMentaAdapter/*.h'
+  # First pattern: local `:path => adapters/Menta`. Second: git clone of the repo root.
+  s.source_files         = 'AdMobMentaAdapter/*.{h,m}', 'adapters/Menta/AdMobMentaAdapter/*.{h,m}'
+  s.public_header_files  = 'AdMobMentaAdapter/*.h', 'adapters/Menta/AdMobMentaAdapter/*.h'
+  s.swift_versions       = ['5.0']
 
   s.frameworks = 'Foundation', 'UIKit'
 
