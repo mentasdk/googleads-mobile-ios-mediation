@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
 /// Adapter version. Follows {Menta SDK version}.{adapter revision}.
-static NSString *const AdMobMentaAdapterVersion = @"1.0.33";
+static NSString *const AdMobMentaAdapterVersion = @"1.0.34";
 
 /// Error domain reported to Google Mobile Ads.
 static NSString *const AdMobMentaAdapterErrorDomain = @"com.advlion.adapter.admob";

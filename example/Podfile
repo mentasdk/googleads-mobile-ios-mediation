@@ -9,7 +9,7 @@ target 'SampleAdSDK' do
     project 'MediationExample.xcodeproj'
     inherit! :search_paths
 
-    pod 'AdMobMentaAdapter', :path => '../'
+    pod 'AdMobMentaAdapter', :path => '../adapters/Menta'
 
     if ENV['BUILD_SNIPPETS']
       pod 'Snippets', :path => './Snippets'

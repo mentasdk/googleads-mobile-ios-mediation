@@ -1,24 +1,24 @@
 PODS:
-  - AdMobMentaAdapter (1.0.33):
+  - AdMobMentaAdapter (1.0.34):
     - Google-Mobile-Ads-SDK (>= 12.0)
-    - MentaBaseGlobal (= 1.0.33)
-    - MentaMediationGlobal (= 1.0.33)
-    - MentaVlionGlobal (= 1.0.33)
-    - MentaVlionGlobalAdapter (= 1.0.33)
-  - Google-Mobile-Ads-SDK (12.9.0):
+    - MentaBaseGlobal (= 1.0.34)
+    - MentaMediationGlobal (= 1.0.34)
+    - MentaVlionGlobal (= 1.0.34)
+    - MentaVlionGlobalAdapter (= 1.0.34)
+  - Google-Mobile-Ads-SDK (12.14.0):
     - GoogleUserMessagingPlatform (>= 1.1)
-  - GoogleUserMessagingPlatform (3.0.0)
-  - MentaBaseGlobal (1.0.33)
-  - MentaMediationGlobal (1.0.33):
-    - MentaBaseGlobal (~> 1.0.33)
-  - MentaVlionGlobal (1.0.33):
-    - MentaBaseGlobal (~> 1.0.33)
-  - MentaVlionGlobalAdapter (1.0.33):
-    - MentaMediationGlobal (~> 1.0.33)
-    - MentaVlionGlobal (~> 1.0.33)
+  - GoogleUserMessagingPlatform (3.1.0)
+  - MentaBaseGlobal (1.0.34)
+  - MentaMediationGlobal (1.0.34):
+    - MentaBaseGlobal (~> 1.0.34)
+  - MentaVlionGlobal (1.0.34):
+    - MentaBaseGlobal (~> 1.0.34)
+  - MentaVlionGlobalAdapter (1.0.34):
+    - MentaMediationGlobal (~> 1.0.34)
+    - MentaVlionGlobal (~> 1.0.34)
 
 DEPENDENCIES:
-  - AdMobMentaAdapter (from `../`)
+  - AdMobMentaAdapter (from `../adapters/Menta`)
   - Google-Mobile-Ads-SDK (~> 12.9)
 
 SPEC REPOS:
@@ -32,17 +32,17 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   AdMobMentaAdapter:
-    :path: "../"
+    :path: "../adapters/Menta"
 
 SPEC CHECKSUMS:
-  AdMobMentaAdapter: 03afd878c1f5c1dc395b7f15f1c74847e4e138ad
-  Google-Mobile-Ads-SDK: 36cce7d8dc1b615145d02491c8bf5640ef854e7c
-  GoogleUserMessagingPlatform: f8d0cdad3ca835406755d0a69aa634f00e76d576
-  MentaBaseGlobal: 2edffca373c9056fd8920b764d2caaa96b03e269
-  MentaMediationGlobal: b196f74033faf15ae1f3e07c1251cfe706ba79f8
-  MentaVlionGlobal: a5408a0156bd532ec1ea557841c6090de5c6a3ef
-  MentaVlionGlobalAdapter: 4d3ef69bfc51c550636e6c30ecae872d3da31f4f
+  AdMobMentaAdapter: ae8218d046d2e721bcb1714163c06943ffa2eb17
+  Google-Mobile-Ads-SDK: 4534fd2dfcd3f705c5485a6633c5188d03d4eed2
+  GoogleUserMessagingPlatform: befe603da6501006420c206222acd449bba45a9c
+  MentaBaseGlobal: 61263e8960edbf5ce38be672ba6276db5a32aa72
+  MentaMediationGlobal: d4b56f4e9574e792ac58ed9ab88ba8ad6e622419
+  MentaVlionGlobal: 601eec3c4c04f6b19c43158357cbe8e663f6e0c6
+  MentaVlionGlobalAdapter: 4f11402ed27f611cc4e18e28b347c4e9b3168332
 
-PODFILE CHECKSUM: 63ca0918a6355a232d7fa2b01e13c56a8aa79e15
+PODFILE CHECKSUM: ac46ae6d454dacf424782fd674a69739316b0a6e
 
 COCOAPODS: 1.16.2
